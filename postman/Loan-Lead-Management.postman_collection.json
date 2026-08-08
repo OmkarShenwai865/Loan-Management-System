@@ -1,0 +1,248 @@
+{
+  "info": {
+    "name": "Loan Eligibility & Lead Management System",
+    "description": "MoneyBeing Pvt Ltd — Loan Eligibility & Lead Management Module.\n\nSet the `base_url` collection variable (default http://127.0.0.1:8000/api). Run 'Login' first — it automatically saves `access_token` and `refresh_token` as collection variables via its test script, and every protected request below uses {{access_token}} as a Bearer token.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://127.0.0.1:8000/api" },
+    { "key": "access_token", "value": "" },
+    { "key": "refresh_token", "value": "" },
+    { "key": "lead_id", "value": "1" },
+    { "key": "rule_id", "value": "1" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Login",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"admin\",\n  \"password\": \"AdminPass@123\"\n}"
+            },
+            "url": { "raw": "{{base_url}}/auth/login/", "host": ["{{base_url}}"], "path": ["auth", "login", ""] },
+            "description": "Admin login. Returns {access, refresh, role, username}."
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.access) { pm.collectionVariables.set('access_token', data.access); }",
+                  "if (data.refresh) { pm.collectionVariables.set('refresh_token', data.refresh); }",
+                  "pm.test('Status is 200', () => pm.response.to.have.status(200));"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Refresh Token",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"refresh\": \"{{refresh_token}}\"\n}" },
+            "url": { "raw": "{{base_url}}/auth/refresh/", "host": ["{{base_url}}"], "path": ["auth", "refresh", ""] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const data = pm.response.json();",
+                  "if (data.access) { pm.collectionVariables.set('access_token', data.access); }"
+                ],
+                "type": "text/javascript"
+              }
+            }
+          ],
+          "response": []
+        },
+        {
+          "name": "Logout",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{access_token}}" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"refresh\": \"{{refresh_token}}\"\n}" },
+            "url": { "raw": "{{base_url}}/auth/logout/", "host": ["{{base_url}}"], "path": ["auth", "logout", ""] },
+            "description": "Blacklists the refresh token."
+          },
+          "response": []
+        },
+        {
+          "name": "Current Admin (Me)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{access_token}}" }] },
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/auth/me/", "host": ["{{base_url}}"], "path": ["auth", "me", ""] }
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Leads",
+      "item": [
+        {
+          "name": "Create Lead (Module 7 endpoint)",
+          "request": {
+            "auth": { "type": "noauth" },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"full_name\": \"Rahul Sharma\",\n  \"mobile_number\": \"9876543210\",\n  \"email\": \"rahul.sharma@example.com\",\n  \"date_of_birth\": \"1990-05-15\",\n  \"city\": \"Pune\",\n  \"pincode\": \"411001\",\n  \"loan_type\": \"HOME_LOAN\",\n  \"employment_type\": \"SALARIED\",\n  \"monthly_income\": 55000,\n  \"loan_amount_required\": 2000000,\n  \"property_value\": 3000000,\n  \"consent_given\": true\n}"
+            },
+            "url": { "raw": "{{base_url}}/leads/", "host": ["{{base_url}}"], "path": ["leads", ""] },
+            "description": "Public, throttled. Fetches credit score, runs the BRE, stores the lead.\n\nDuplicate mobile_number -> 409 {status: 'error', message: 'Lead already exists'}.\n\nNote: the mock credit score provider is seeded by mobile_number, so this exact number always returns the same score (see README) — change it to test other outcomes."
+          },
+          "response": []
+        },
+        {
+          "name": "List Leads (search/filter/pagination)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{access_token}}" }] },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/leads/list/?page=1&search=&loan_type=&bre_status=",
+              "host": ["{{base_url}}"],
+              "path": ["leads", "list", ""],
+              "query": [
+                { "key": "page", "value": "1" },
+                { "key": "search", "value": "", "description": "matches full_name or mobile_number" },
+                { "key": "loan_type", "value": "", "description": "HOME_LOAN | LAP" },
+                { "key": "bre_status", "value": "", "description": "ELIGIBLE | NOT_ELIGIBLE | PENDING" },
+                { "key": "employment_type", "value": "", "disabled": true },
+                { "key": "created_after", "value": "", "disabled": true, "description": "YYYY-MM-DD" },
+                { "key": "created_before", "value": "", "disabled": true, "description": "YYYY-MM-DD" },
+                { "key": "ordering", "value": "-created_at", "disabled": true }
+              ]
+            }
+          },
+          "response": []
+        },
+        {
+          "name": "Lead Detail",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{access_token}}" }] },
+            "method": "GET",
+            "url": {
+              "raw": "{{base_url}}/leads/{{lead_id}}/",
+              "host": ["{{base_url}}"],
+              "path": ["leads", "{{lead_id}}", ""]
+            },
+            "description": "Includes credit_score_history and rejection_reasons."
+          },
+          "response": []
+        },
+        {
+          "name": "Export Leads (Excel)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{access_token}}" }] },
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/leads/export/", "host": ["{{base_url}}"], "path": ["leads", "export", ""] },
+            "description": "Returns an .xlsx file of all leads."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "Dashboard",
+      "item": [
+        {
+          "name": "Stats",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{access_token}}" }] },
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/dashboard/stats/", "host": ["{{base_url}}"], "path": ["dashboard", "stats", ""] },
+            "description": "Returns total_leads, eligible_leads, rejected_leads, average_credit_score."
+          },
+          "response": []
+        }
+      ]
+    },
+    {
+      "name": "BRE Rules",
+      "item": [
+        {
+          "name": "List Rules",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{access_token}}" }] },
+            "method": "GET",
+            "url": { "raw": "{{base_url}}/bre/rules/?page_size=100", "host": ["{{base_url}}"], "path": ["bre", "rules", ""], "query": [{ "key": "page_size", "value": "100" }] }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Rule (Absolute)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{access_token}}" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Minimum Credit Score\",\n  \"field_name\": \"credit_score\",\n  \"operator\": \">=\",\n  \"comparison_type\": \"ABSOLUTE\",\n  \"value\": \"700\",\n  \"rejection_reason\": \"Credit Score below minimum requirement\",\n  \"is_active\": true,\n  \"priority\": 40\n}"
+            },
+            "url": { "raw": "{{base_url}}/bre/rules/", "host": ["{{base_url}}"], "path": ["bre", "rules", ""] }
+          },
+          "response": []
+        },
+        {
+          "name": "Create Rule (Percent of Field)",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{access_token}}" }] },
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Loan Amount vs Property Value\",\n  \"field_name\": \"loan_amount\",\n  \"operator\": \"<=\",\n  \"comparison_type\": \"PERCENT_OF_FIELD\",\n  \"percent_value\": 80,\n  \"reference_field\": \"property_value\",\n  \"rejection_reason\": \"Loan Amount exceeds eligible limit\",\n  \"is_active\": true,\n  \"priority\": 50\n}"
+            },
+            "url": { "raw": "{{base_url}}/bre/rules/", "host": ["{{base_url}}"], "path": ["bre", "rules", ""] }
+          },
+          "response": []
+        },
+        {
+          "name": "Update Rule",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{access_token}}" }] },
+            "method": "PATCH",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": { "mode": "raw", "raw": "{\n  \"value\": \"650\"\n}" },
+            "url": {
+              "raw": "{{base_url}}/bre/rules/{{rule_id}}/",
+              "host": ["{{base_url}}"],
+              "path": ["bre", "rules", "{{rule_id}}", ""]
+            },
+            "description": "Any admin can edit. Changes apply to the next lead evaluation immediately — no restart needed."
+          },
+          "response": []
+        },
+        {
+          "name": "Delete Rule",
+          "request": {
+            "auth": { "type": "bearer", "bearer": [{ "key": "token", "value": "{{access_token}}" }] },
+            "method": "DELETE",
+            "url": {
+              "raw": "{{base_url}}/bre/rules/{{rule_id}}/",
+              "host": ["{{base_url}}"],
+              "path": ["bre", "rules", "{{rule_id}}", ""]
+            },
+            "description": "Requires SUPER_ADMIN role — returns 403 for a plain ADMIN."
+          },
+          "response": []
+        }
+      ]
+    }
+  ]
+}
