@@ -177,6 +177,8 @@ psql -U loan_app_user -d loan_lead_management -f db/loan_lead_management_dump.sq
 ## Notes on scope
 
 - Role-based access is basic: `ADMIN` can view everything; only `SUPER_ADMIN` can delete BRE
-  rules.
+  rules. Only one admin account is currently seeded, with role `SUPER_ADMIN` — there is no
+  plain `ADMIN`-role account yet, so the "can't delete rules" restriction isn't exercised by
+  default.
 - Docker, unit tests, and dashboard chart export were intentionally left out of scope for
   this submission.
