@@ -12,7 +12,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata = {
-  title: "MoneyBeing - Loan Eligibility & Lead Management",
+  title: "Loan Eligibility & Lead Management",
   description: "Loan Eligibility & Lead Management Module",
 };
 

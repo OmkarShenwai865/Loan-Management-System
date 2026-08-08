@@ -46,7 +46,7 @@ export default function Sidebar({ open = false, onClose }) {
         } md:translate-x-0`}
       >
       <div className="h-16 flex items-center px-5 border-b border-white/10">
-        <span className="text-white font-semibold tracking-tight">MoneyBeing</span>
+        <span className="text-white font-semibold tracking-tight">Loan Management</span>
       </div>
 
       <nav className="flex-1 px-3 py-4 space-y-1 overflow-y-auto">

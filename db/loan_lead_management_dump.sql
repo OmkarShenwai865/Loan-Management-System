@@ -2,7 +2,7 @@
 -- PostgreSQL database dump
 --
 
-\restrict l4gd847m2Fh2F9dzWyV8KszXk9tvtTddZg8dhidBfeoTgMZM6BgoyanvfqZccLt
+\restrict fMD8Y1oOqGUyX5XlQy17Mm0VGCe68eyOguFJDZu1kT6OgvuKXwOV0M56W0aPr4m
 
 -- Dumped from database version 17.6
 -- Dumped by pg_dump version 17.6
@@ -478,7 +478,7 @@ ALTER TABLE public.token_blacklist_outstandingtoken ALTER COLUMN id ADD GENERATE
 --
 
 COPY public.accounts_adminuser (id, password, last_login, is_superuser, username, first_name, last_name, is_staff, is_active, date_joined, role, email) FROM stdin;
-1	pbkdf2_sha256$720000$RezpTk8mCaTauwp2vqQSMg$oDhdHPB1dA3Tnp+3+X+2H2d4aJ/51KxUvVNzxLHeLns=	\N	t	admin			t	t	2026-08-07 15:49:55.134754+05:30	SUPER_ADMIN	admin@moneybeing.com
+1	pbkdf2_sha256$720000$RezpTk8mCaTauwp2vqQSMg$oDhdHPB1dA3Tnp+3+X+2H2d4aJ/51KxUvVNzxLHeLns=	\N	t	admin			t	t	2026-08-07 15:49:55.134754+05:30	SUPER_ADMIN	admin@loanmanagement.local
 \.
 
 
@@ -1383,5 +1383,5 @@ ALTER TABLE ONLY public.token_blacklist_outstandingtoken
 -- PostgreSQL database dump complete
 --
 
-\unrestrict l4gd847m2Fh2F9dzWyV8KszXk9tvtTddZg8dhidBfeoTgMZM6BgoyanvfqZccLt
+\unrestrict fMD8Y1oOqGUyX5XlQy17Mm0VGCe68eyOguFJDZu1kT6OgvuKXwOV0M56W0aPr4m
 

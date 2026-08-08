@@ -1,6 +1,6 @@
 # Loan Eligibility & Lead Management System
 
-Internal loan-officer platform for MoneyBeing Pvt Ltd: customers (or officers on their
+Internal loan-officer platform for a lending company: customers (or officers on their
 behalf) submit loan applications, the system fetches a credit score, runs a fully
 database-driven Business Rule Engine (BRE), and stores the resulting lead with its
 eligibility outcome. Admins manage leads, dashboard KPIs, and BRE rules through a

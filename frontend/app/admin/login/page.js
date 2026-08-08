@@ -34,7 +34,7 @@ export default function AdminLoginPage() {
     <main className="flex-1 flex items-center justify-center p-6 bg-slate-50">
       <form onSubmit={handleSubmit} className="w-full max-w-sm bg-white rounded-xl shadow p-8">
         <h1 className="text-xl font-semibold mb-1">Admin Login</h1>
-        <p className="text-slate-500 text-sm mb-6">MoneyBeing Loan Management</p>
+        <p className="text-slate-500 text-sm mb-6">Loan Management</p>
 
         {error && (
           <div className="mb-4 rounded-md bg-red-50 text-red-700 text-sm px-4 py-3">{error}</div>

@@ -8,7 +8,7 @@ schema_view = get_schema_view(
     openapi.Info(
         title="Loan Eligibility & Lead Management API",
         default_version="v1",
-        description="MoneyBeing Pvt Ltd - Loan Eligibility & Lead Management Module",
+        description="Loan Eligibility & Lead Management Module",
     ),
     public=True,
     permission_classes=[permissions.AllowAny],

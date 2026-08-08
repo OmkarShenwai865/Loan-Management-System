@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "Loan Eligibility & Lead Management System",
-    "description": "MoneyBeing Pvt Ltd — Loan Eligibility & Lead Management Module.\n\nSet the `base_url` collection variable (default http://127.0.0.1:8000/api). Run 'Login' first — it automatically saves `access_token` and `refresh_token` as collection variables via its test script, and every protected request below uses {{access_token}} as a Bearer token.",
+    "description": "Loan Eligibility & Lead Management Module.\n\nSet the `base_url` collection variable (default http://127.0.0.1:8000/api). Run 'Login' first — it automatically saves `access_token` and `refresh_token` as collection variables via its test script, and every protected request below uses {{access_token}} as a Bearer token.",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "variable": [
